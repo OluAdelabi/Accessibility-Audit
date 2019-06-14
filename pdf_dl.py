@@ -36,11 +36,13 @@ def get_urls_from_csv(csv_list):
         count = 0
         for row in read_list:
             count += 1
-            if count < 4001:
+            if count < 1001:
                 try:
                     r = requests.post(row[0], verify = False, timeout=10)
                 except requests.exceptions.Timeout:
                     write_failed_urls(([row[0], 'timeout']))
+                except Exception as issue:
+                    write_failed_urls(([row[0], issue]))
                 else:
                     if r.status_code in failed_codes:
                         write_failed_urls(([row[0], r.status_code]))
