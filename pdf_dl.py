@@ -10,8 +10,8 @@ def url_to_filename(url):
     return (file_name)
 
 def write_failed_urls(urls):
-    with open('failed.csv', mode='a') as csv_write:
-        failed_urls = csv.writer(csv_write, deliminter=',')
+    with open('/Users/fw7424/Documents/failed.csv', mode='a') as csv_write:
+        failed_urls = csv.writer(csv_write, delimiter=',')
         failed_urls.writerow(urls)
 
 def sort_to_folder(audit_file, url):
@@ -33,17 +33,20 @@ def get_urls_from_csv(csv_list):
     failed_codes = [404,500,300]
     with open(csv_list, mode ='r') as csv_read:
         read_list = csv.reader(csv_read)
+        count = 0
         for row in read_list:
-            try:
-                r = requests.post(row[0], verify = False, timeout=5)
-            except requests.exceptions.Timeout:
-                write_failed_urls(([row[0], 'timeout']))
-            else:
-                if r.status_code in failed_codes:
-                    write_failed_urls(([row[0], r.status_code]))
+            count += 1
+            if count < 4001:
+                try:
+                    r = requests.post(row[0], verify = False, timeout=10)
+                except requests.exceptions.Timeout:
+                    write_failed_urls(([row[0], 'timeout']))
                 else:
-                    sort_to_folder(url_to_filename(row[0]), row[0])
-                    #rg = requests.get(row[0], allow_redirects=False)
-                    #open('{}{}'.format('/Users/fw7424/Documents/Top 20 audit/', url_to_filename(row[0])), 'wb').write(rg.content)
+                    if r.status_code in failed_codes:
+                        write_failed_urls(([row[0], r.status_code]))
+                    else:
+                        sort_to_folder(url_to_filename(row[0]), row[0])
+            else:
+                break
                
 get_urls_from_csv(top_20)
