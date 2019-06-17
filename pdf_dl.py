@@ -36,7 +36,7 @@ def get_urls_from_csv(csv_list):
         count = 0
         for row in read_list:
             count += 1
-            if count < 1001:
+            if count < 3001:
                 try:
                     r = requests.post(row[0], verify = False, timeout=10)
                 except requests.exceptions.Timeout:

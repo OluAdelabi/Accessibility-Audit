@@ -34,7 +34,21 @@ def scan_for_site_inventory(FileLocation):
                     if fnmatch.fnmatch(audit_item, '*.accreport.html'):
                         count += 1
                         failed('{}/{}'.format(fullPath,audit_item), count)
-         
+
+def scan_for_site_inv(FileLocation, count):
+    with os.scandir(FileLocation) as listOfEntries:
+        for entry in listOfEntries:
+            if fnmatch.fnmatch(entry,'*.pdf'):
+                count += 1
+                print(count, entry.name)
+            elif entry.is_dir() == True and "." not in entry.name:
+                #print('{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name))
+                folder = '{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name)
+                scan_for_site_inv(folder, count)
+
+
 #audit_file = '/Users/fw7424/Documents/Cphs_audited/cphs.wayne.edu~giving~nurse_anesthesia_specificgift_form.pdf.accreport.html'                
-scan_for_site_inventory(FileLocation)
+#scan_for_site_inventory(FileLocation)
+count = 0
+scan_for_site_inv(FileLocation,count)
 #failed(audit_file)
