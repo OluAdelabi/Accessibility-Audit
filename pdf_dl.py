@@ -33,23 +33,15 @@ def get_urls_from_csv(csv_list):
     failed_codes = [404,500,300]
     with open(csv_list, mode ='r') as csv_read:
         read_list = csv.reader(csv_read)
-        count = 0
         for row in read_list:
-            count += 1
-            if count < 501:
-                print(count)
-                try:
-                    r = requests.post(row[0], verify = False, timeout=10)
-                except requests.exceptions.Timeout:
-                    write_failed_urls(([row[0], 'timeout']))
-                except Exception as issue:
-                    write_failed_urls(([row[0], issue]))
-                else:
-                    if r.status_code in failed_codes:
-                        write_failed_urls(([row[0], r.status_code]))
-                    else:
-                        sort_to_folder(url_to_filename(row[0]), row[0])
+            try:
+                r = requests.post(row[0], verify = False, timeout=10)
+            except Exception as issue:
+                write_failed_urls(([row[0], issue]))
             else:
-                break
-               
+                if r.status_code in failed_codes:
+                    write_failed_urls(([row[0], r.status_code]))
+                else:
+                    sort_to_folder(url_to_filename(row[0]), row[0])
+                    
 get_urls_from_csv(top_20)

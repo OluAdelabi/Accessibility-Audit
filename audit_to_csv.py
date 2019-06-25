@@ -20,32 +20,17 @@ def failed(audit_file, count):
             each_item = ('{}.{}'.format('3',count),pdf_url, rule_name, 'Critical', rule_description)
             write_to_CSV(each_item)
 
-def scan_for_site_inventory(FileLocation):
-    with os.scandir(FileLocation) as listOfEntries:  
-        for entry in listOfEntries:
-            if entry.is_file():
-                    pass
-            else:
-                fullPath = ('{}{}'.format(FileLocation, entry.name))
-                listOfFiles = os.listdir(fullPath) 
-                count = 0
-                #pattern = "*.accreport.html"
-                for audit_item in listOfFiles:  
-                    if fnmatch.fnmatch(audit_item, '*.accreport.html'):
-                        count += 1
-                        failed('{}/{}'.format(fullPath,audit_item), count)
-
 def scan_for_site_inv(FileLocation, count):
     with os.scandir(FileLocation) as listOfEntries:
         for entry in listOfEntries:
             if fnmatch.fnmatch(entry,'*.accreport.html'):
                 count += 1
-                print(count, entry.name)
+                failed(os.path.abspath(entry), count)
             elif entry.is_dir() == True and entry.name.startswith( '.' ) == False:
-                #print('{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name))
                 folder = '{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name)
                 scan_for_site_inv(folder, count)
 
 count = 0
-scan_for_site_inv(FileLocation,count)
+print (csv)
+#scan_for_site_inv(FileLocation,count)
 #failed(audit_file)
