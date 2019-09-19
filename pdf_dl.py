@@ -1,7 +1,7 @@
 ### PDF download
 import csv, requests, os, urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-top_20 = '/Users/fw7424/Documents/Top_20.csv'
+top_20 = '/Users/fw7424/Documents/New_sites.csv'
 
 def url_to_filename(url):
     url = url.split('://')
@@ -15,10 +15,10 @@ def write_failed_urls(urls):
         failed_urls.writerow(urls)
 
 def sort_to_folder(audit_file, url):
-    rg = requests.get(url, allow_redirects=False)
+    rg = requests.get(url, verify = False, allow_redirects=False)
     location = audit_file.split('~')
     pdf_name = location.pop()
-    print(pdf_name)
+    #print(pdf_name)
     s = '/'
     location = s.join(location)
     top_dir = '/Users/fw7424/Documents/' + location
@@ -36,6 +36,7 @@ def get_urls_from_csv(csv_list):
         for row in read_list:
             try:
                 r = requests.post(row[0], verify = False, timeout=10)
+                print(row[0])
             except Exception as issue:
                 write_failed_urls(([row[0], issue]))
             else:

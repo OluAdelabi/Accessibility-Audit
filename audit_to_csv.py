@@ -26,7 +26,7 @@ def scan_for_site_inv(FileLocation, count):
             if fnmatch.fnmatch(entry,'*.accreport.html'):
                 count += 1
                 print(os.path.abspath(entry))
-                #failed(os.path.abspath(entry), count)
+                failed(os.path.abspath(entry), count)
             elif entry.is_dir() == True and entry.name.startswith( '.' ) == False:
                 folder = '{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name)
                 scan_for_site_inv(folder, count)
@@ -34,4 +34,3 @@ def scan_for_site_inv(FileLocation, count):
 count = 0
 
 scan_for_site_inv(FileLocation,count)
-#failed(audit_file)
