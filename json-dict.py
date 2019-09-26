@@ -1,18 +1,30 @@
-import json, csv
-file_path = '/Users/fw7424/Documents/Accessibility Audit/Neurology_med/programstructure.json'
+import json, csv, os, fnmatch
+#file_path = '/Users/fw7424/Accessibility_Audit/Psychiatry_med/voluntary.json'
+FileLocation = '/Users/fw7424/Accessibility_Audit/'
+csv_list = []
+
+def scan_for_site_inventory(FileLocation, csv_list):
+    pattern = '*.json'
+    with os.scandir(FileLocation) as ListOfEntries:
+        for item in ListOfEntries:
+            if fnmatch.fnmatch(item,'*.DS_Store'):
+                pass
+            elif fnmatch.fnmatch(item, pattern):
+                print(FileLocation)
+                path = '{}{}'.format(FileLocation, item.name)
+                csv_list.append(path)
 
 def Write_To_CSV(siteNAME, all):
-    file_write = ('/Users/fw7424/Documents/Accessibility Audit/{}.csv'.format(siteNAME))
+    file_write = ('/Users/fw7424/Accessibility_Audit/{}.csv'.format(siteNAME))
     with open(file_write, mode='a') as csv_write:
                 violation_csv = csv.writer(csv_write, delimiter= ',')
                 violation_csv.writerow(all) 
                 
 def json_checks(collection, dict_name, siteURL, count, siteNAME):
-    exclude = ['html','#mainMenu','.wsuheader','.wsufooter']
+    # exclude = ['.wsuheader','.wsufooter']
+    exclude = []
     for issue in collection:
-        print(issue)
         for each in issue['nodes']:
-            
             if dict_name == 'incomplete':
                 component = each['any'][0]['relatedNodes'][0]['target'][0]
                 element = each['target'][0]
@@ -35,7 +47,6 @@ def json_checks(collection, dict_name, siteURL, count, siteNAME):
             else:
                 docNUM = '3.{}'.format(count) 
                 all = (docNUM, siteURL,checkpoint, impact, component, description, element, remediation)
-                print(all,'some')
                 Write_To_CSV(siteNAME, all)
                 
 count = 00
@@ -47,8 +58,14 @@ def json_to_dict(file_path, count):
     siteURL = (dict_object['url']) 
     print(siteURL)
     siteNAME = file_path.rsplit('/',2)[1]
-    json_checks(dict_object['incomplete'], 'incomplete', siteURL, count,siteNAME)
+    # json_checks(dict_object['incomplete'], 'incomplete', siteURL, count,siteNAME)
     json_checks(dict_object['violations'], 'violations', siteURL, count,siteNAME)
     count += 1
+    
+scan_for_site_inventory(FileLocation, csv_list)
+print(csv_list)
+for item in csv_list:
+    print('here')
+    json_to_dict(item, count)
 
-json_to_dict(file_path, count)
+# json_to_dict(file_path, count)

@@ -1,12 +1,11 @@
 ### PDF download
 import csv, requests, os, urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-top_20 = '/Users/fw7424/Documents/New_sites.csv'
+file_list = '/Users/fw7424/Documents/New_sites.csv'
 
 def url_to_filename(url):
     url = url.split('://')
-    url = url[1]
-    file_name = url.replace('/','~')
+    file_name = url[1].replace('/','~')
     return (file_name)
 
 def write_failed_urls(urls):
@@ -45,4 +44,4 @@ def get_urls_from_csv(csv_list):
                 else:
                     sort_to_folder(url_to_filename(row[0]), row[0])
                     
-get_urls_from_csv(top_20)
+get_urls_from_csv(file_list)

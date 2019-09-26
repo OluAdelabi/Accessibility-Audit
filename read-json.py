@@ -1,9 +1,8 @@
 import json, os, fnmatch, pathlib, csv
 
-main_folder = '/Users/fw7424/Documents/Accessibility Audit/'
+main_folder = '/Users/fw7424/Accessibility_Audit/'
 file_list = []
-file_write = '/Users/fw7424/Documents/sites.csv'
-#def read_the_entries(main_folder, file_list)
+# def read_the_entries(main_folder, file_list)
 with os.scandir(main_folder) as listOfEntries:
     for entry in listOfEntries:
         if entry.is_file():
@@ -22,7 +21,7 @@ with os.scandir(main_folder) as listOfEntries:
                     
 
 def Write_To_CSV(siteNAME, all):
-    file_write = ('/Users/fw7424/Documents/Accessibility Audit/{}.csv'.format(siteNAME))
+    file_write = ('/Users/fw7424/Accessibility_Audit/{}.csv'.format(siteNAME))
     with open(file_write, mode='a') as csv_write:
                 violation_csv = csv.writer(csv_write, delimiter= ',')
                 violation_csv.writerow(all) 
@@ -37,6 +36,12 @@ def json_checks(collection, dict_name, siteURL, count, siteNAME):
                 except IndexError:
                     component = each['target'][0]
                 element = each['target'][0]
+            elif dict_name == 'passes':
+                if 'style' in each.get('html'):
+                    component = each['target'][0]
+                    element = each['html']
+                else:
+                    break
             else:
                 component = each['target'][0]
                 element = each['html']
@@ -47,6 +52,8 @@ def json_checks(collection, dict_name, siteURL, count, siteNAME):
                 elif 'best-practice' in tag:
                     checkpoint.append('best-practice')
             impact = issue['impact']
+            if impact == None:
+                impact = 'table'
             description = issue['help']
             remediation = issue['description']
             checkpoint = ', '.join(map(str, checkpoint))
@@ -57,7 +64,6 @@ def json_checks(collection, dict_name, siteURL, count, siteNAME):
                 docNUM = '3.{}'.format(count) 
                 all = (docNUM, siteURL,checkpoint, impact, component, description, element, remediation)
                 Write_To_CSV(siteNAME, all)
-                
 
 def json_to_dict(file_path, count):
 #Get a file object with write permission.
@@ -66,7 +72,14 @@ def json_to_dict(file_path, count):
     dict_object = json.load(file_object)
     siteURL = (dict_object['url']) 
     siteNAME = file_path.rsplit('/',2)[1]
-    json_checks(dict_object['incomplete'], 'incomplete', siteURL, count,siteNAME)
+    try:
+        json_checks(dict_object['incomplete'], 'incomplete', siteURL, count,siteNAME)
+    except KeyError:
+        pass
+    try:
+        json_checks(dict_object['passes'], 'passes', siteURL, count, siteNAME)
+    except KeyError:
+        pass
     json_checks(dict_object['violations'], 'violations', siteURL, count,siteNAME)
     
 
