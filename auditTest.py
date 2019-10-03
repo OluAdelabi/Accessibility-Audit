@@ -1,12 +1,9 @@
-#import pytest
-import requests, json, ssl, time, os, csv, fnmatch
-import readJSON
+import requests, json, ssl, time, os, csv, fnmatch, readJSON
 from selenium import webdriver
 from axe_selenium_python import Axe
 ssl._create_default_https_context = ssl._create_unverified_context
-        
-Single_page_test = ['https://cardiology.med.wayne.edu/schedules-calls']
-page_list =[]
+
+# page_list =[]
 
 def read_urls(csv_item):
     with open(csv_item, mode ='r') as csv_read:
@@ -46,13 +43,11 @@ def test_site(site,folderName):
         os.makedirs('{}{}'.format('/Users/fw7424/Accessibility_Audit/', folderName))
     except OSError:
         pass
-    page_list.append('{}.json'.format(page_name))
+    # page_list.append('{}.json'.format(page_name))
     axe.write_results(results, file_location)
     driver.close()
 
 def auto_check(site):
-    folderName = site.rsplit('.', 2)[0].split('//')[1]
-    test_site(site, folderName)
     r = requests.post(site, verify = False, timeout=20)
     if r.status_code != 404 and r.status_code != 500:
         folderName = site.rsplit('.', 2)[0].split('//')[1]
