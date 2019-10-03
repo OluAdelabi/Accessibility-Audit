@@ -1,20 +1,32 @@
 #test redirected pdfs
-import requests, os, fnmatch, pysftp
+import os, fnmatch, csv, requests
 
-def scan_for_site_inventory(FileLocation, count):
-    #listOfEntries = sftp.listdir()
+def scan_for_site_inventory(FileLocation, pattern, Ignore=None):
+    try:
         with os.scandir(FileLocation) as listOfEntries:
             for entry in listOfEntries:
-                if fnmatch.fnmatch(entry,'*.accreport.html'):
-                    count += 1
-                    print(count, entry.name)
-                    #sftp.isdir()
-                elif entry.is_dir() == True and entry.name.startswith( '.' ) == False:
-                    #print('{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name))
+                if fnmatch.fnmatch(entry, pattern):
+                    print(os.path.abspath(entry))
+                elif entry.is_dir() == True and entry.name.startswith( '.' ) == False and entry.name not in Ignore:
                     folder = '{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name)
-                    scan_for_site_inventory(folder, count)
+                    scan_for_site_inventory(folder, pattern, Ignore)
+    except PermissionError:
+        pass
+    
+def read_urls(csv_item):
+    with open(csv_item, mode ='r') as csv_read:
+            read_list = csv.reader(csv_read, delimiter=',')
+            for row in read_list:
+                if row[2] == '1':
+                    auto_check(row[1])
 
-path_l = '/Users/fw7424/Documents/DONE/Art.wayne_audit/art.wayne.edu/activities/art.wayne.edu~activities~4yearplans2018adr copy.txt'
-doc_1 = open(path_l, 'r')
-count = 0
-scan_for_site_inventory('/Users/fw7424', count)
+def auto_check(site):
+    folderName = site.rsplit('.', 2)[0].split('//')[1]
+    print(folderName)
+ 
+# Ignore=['Library','wild-wayne','anaconda']
+# scan_for_site_inventory('/Users/','*.edu.csv', Ignore=Ignore)
+
+read_urls('/Users/fw7424/Documents/2019-09-19-psychiatry.med.wayne.edu.csv')
+
+        

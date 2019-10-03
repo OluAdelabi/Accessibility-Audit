@@ -1,15 +1,17 @@
 import csv, os, fnmatch
 FileLocation = '/Users/fw7424/Documents/'
 csv_list = []
-def scan_for_site_inventory(FileLocation, csv_list):
+
+def scan_files(FileLocation, csv_list):
     pattern = '*.edu.csv'
     with os.scandir(FileLocation) as ListOfEntries:
         for item in ListOfEntries:
             if fnmatch.fnmatch(item,'*.DS_Store'):
                 pass
             elif fnmatch.fnmatch(item, pattern):
-                path = '{}{}'.format(FileLocation, item.name)
-                csv_list.append(path)
+                print(os.path.dirname)
+                # path = '{}{}'.format(FileLocation, item.name)
+                # csv_list.append(path)
 
 def Write_To_CSV(content):
     file_write = ('/Users/fw7424/Documents/{}.csv'.format('Top_20'))
@@ -26,7 +28,7 @@ def get_pdfs_only(csv_list):
             read_list = csv.reader(csv_read, delimiter=',')
             for row in read_list:
                 if row[2] == '1':
-                    print(row)
+                    return row[1]
                     pdf_array.append(row[1])
                 # if row[0] in (None,'') and '.pdf' in row[1]:
                 #     if row[1] in pdf_array:
@@ -38,5 +40,5 @@ def get_pdfs_only(csv_list):
     for pdf in pdf_array:
         Write_To_CSV(pdf)
 
-scan_for_site_inventory(FileLocation, csv_list)
-get_pdfs_only(csv_list)
+# scan_for_site_inventory(FileLocation, csv_list)
+# get_pdfs_only(csv_list)
