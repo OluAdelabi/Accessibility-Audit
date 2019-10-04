@@ -1,7 +1,8 @@
 import json, os, fnmatch, pathlib, csv
+from pathlib import Path
 
 def Write_To_CSV(siteNAME, all):
-    file_write = ('/Users/fw7424/Accessibility_Audit/{}.csv'.format(siteNAME))
+    file_write = ('{}/Accessibility_Audit/{}.csv'.format(str(Path.home()),siteNAME))
     with open(file_write, mode='a') as csv_write:
                 violation_csv = csv.writer(csv_write, delimiter= ',')
                 violation_csv.writerow(all) 
@@ -71,7 +72,7 @@ def json_to_dict(file_path, count):
     json_checks(dict_object['violations'], 'violations', siteURL, count,siteNAME)
 
 def program_run():
-    main_folder = '/Users/fw7424/Accessibility_Audit/'
+    main_folder = ('{}/Accessibility_Audit/'.format(str(Path.home())))
     file_list = []
     with os.scandir(main_folder) as listOfEntries:
         for entry in listOfEntries:

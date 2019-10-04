@@ -1,5 +1,6 @@
 import requests, json, ssl, time, os, csv, fnmatch, readJSON
 from selenium import webdriver
+from pathlib import Path
 from axe_selenium_python import Axe
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -14,9 +15,9 @@ def read_urls(csv_item):
                 if i == 0:
                     print(csv_item)
 
-def scan_for_files(FileLocation, pattern, Ignore=None):
+def scan_for_files(pattern, TopFilePath=str(Path.home()), Ignore=None):
     try:
-        with os.scandir(FileLocation) as listOfEntries:
+        with os.scandir(TopFilePath) as listOfEntries:
             for entry in listOfEntries:
                 if fnmatch.fnmatch(entry, pattern):
                     read_urls(os.path.abspath(entry))
@@ -38,9 +39,9 @@ def test_site(site,folderName):
     results = axe.run(options=axe_options)
     # Write results to file
     page_name = (site.split('.edu/',1)[1]).replace('/','_')
-    file_location = ('{}{}/{}.json'.format('/Users/fw7424/Accessibility_Audit/', folderName, page_name))
+    file_location = ('{}/Accessibility_Audit/{}/{}.json'.format(str(Path.home()), folderName, page_name))
     try:
-        os.makedirs('{}{}'.format('/Users/fw7424/Accessibility_Audit/', folderName))
+        os.makedirs('{}/Accessibility_Audit/{}'.format(str(Path.home()), folderName))
     except OSError:
         pass
     # page_list.append('{}.json'.format(page_name))
@@ -53,5 +54,5 @@ def auto_check(site):
         folderName = site.rsplit('.', 2)[0].split('//')[1]
         test_site(site, folderName)
 
-scan_for_files('/Users/','*.edu.csv', Ignore=['Library','wild-wayne','anaconda'])
+scan_for_files('*.edu.csv', Ignore=['Library','wild-wayne','anaconda'])
 readJSON.program_run()
