@@ -15,15 +15,15 @@ def read_urls(csv_item):
                 if i == 0:
                     print(csv_item)
 
-def scan_for_files(pattern, TopFilePath=str(Path.home()), Ignore=None):
+def scan_for_files(pattern, FilePath, Ignore=None):
     try:
-        with os.scandir(TopFilePath) as listOfEntries:
+        with os.scandir(FilePath) as listOfEntries:
             for entry in listOfEntries:
                 if fnmatch.fnmatch(entry, pattern):
                     read_urls(os.path.abspath(entry))
                 elif entry.is_dir() == True and entry.name.startswith( '.' ) == False and entry.name not in Ignore:
                     folder = '{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name)
-                    scan_for_files(folder, pattern, Ignore)
+                    scan_for_files(pattern, folder, Ignore)
     except PermissionError:
         pass
 
@@ -54,5 +54,5 @@ def auto_check(site):
         folderName = site.rsplit('.', 2)[0].split('//')[1]
         test_site(site, folderName)
 
-scan_for_files('*.edu.csv', Ignore=['Library','wild-wayne','anaconda'])
+scan_for_files('*.edu.csv', str(Path.home()), Ignore=['Library','wild-wayne','anaconda'])
 readJSON.program_run()
