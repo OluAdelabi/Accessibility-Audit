@@ -27,7 +27,7 @@ def json_checks(collection, dict_name, siteURL, count, siteNAME):
                     impact = 'image'
                     component = each['target'][0]
                     element = each['html']
-                elif ['<table class="table-stack">'] == each.get('html'):
+                elif ['class="table-stack"'] in each.get('html'):
                     print('FOUND')
                     break
                 else:
@@ -70,6 +70,7 @@ def json_to_dict(file_path, count):
     except KeyError:
         pass
     json_checks(dict_object['violations'], 'violations', siteURL, count,siteNAME)
+    os.remove(file_path)
 
 def program_run():
     main_folder = ('{}/Accessibility_Audit/'.format(str(Path.home())))

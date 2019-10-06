@@ -1,7 +1,8 @@
-import requests, json, ssl, time, os, csv, fnmatch, readJSON
+import requests, json, ssl, time, os, csv, fnmatch, readJSON, urllib3
 from selenium import webdriver
 from pathlib import Path
 from axe_selenium_python import Axe
+urllib3.disable_warnings()
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # page_list =[]
