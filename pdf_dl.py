@@ -16,8 +16,6 @@ def write_failed_urls(urls):
 def sort_to_folder(audit_file, url):
     rg = requests.get(url, verify = False, allow_redirects=False)
     location = audit_file.split('~')
-    pdf_name = location.pop()
-    #print(pdf_name)
     s = '/'
     location = s.join(location)
     top_dir = '/Users/fw7424/Documents/' + location

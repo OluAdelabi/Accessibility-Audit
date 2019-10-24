@@ -27,7 +27,7 @@ def json_checks(collection, dict_name, siteURL, count, siteNAME):
                     impact = 'image'
                     component = each['target'][0]
                     element = each['html']
-                elif ['class="table-stack"'] in each.get('html'):
+                elif 'class="table-stack"' in each.get('html'):
                     print('FOUND')
                     break
                 else:
@@ -81,7 +81,8 @@ def program_run():
                 pass
             else:
                 count = 00
-                sub_folder = ('{}{}/'.format(main_folder,entry.name))
+                sub_folder = ('{}{}/'.format(main_folder, entry.name))
+                print(sub_folder)
                 listOfFiles = os.listdir(sub_folder)  
                 pattern = "*.json"
                 for audit_item in listOfFiles:

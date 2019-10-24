@@ -25,7 +25,7 @@ def program_run():
                 print('yes')
                 file_name = '{}/{}'.format(os.path.dirname(os.path.abspath(entry)),entry.name)
                 read_items(file_name)
-                
+
                 # read_items(file-name)
     
         #     if entry.is_file():

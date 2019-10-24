@@ -39,7 +39,7 @@ def test_site(site,folderName):
     axe.inject()
     results = axe.run(options=axe_options)
     # Write results to file
-    page_name = (site.split('.edu/',1)[1]).replace('/','_')
+    page_name = (site.split('.local/',1)[1]).replace('/','_')
     file_location = ('{}/Accessibility_Audit/{}/{}.json'.format(str(Path.home()), folderName, page_name))
     try:
         os.makedirs('{}/Accessibility_Audit/{}'.format(str(Path.home()), folderName))
@@ -48,12 +48,13 @@ def test_site(site,folderName):
     # page_list.append('{}.json'.format(page_name))
     axe.write_results(results, file_location)
     driver.close()
-
+    
 def auto_check(site):
-    r = requests.post(site, verify = False, timeout=20)
+    r = requests.post(site, verify = False, timeout=30)
     if r.status_code != 404 and r.status_code != 500:
         folderName = site.rsplit('.', 2)[0].split('//')[1]
+        print(site)
         test_site(site, folderName)
-
-scan_for_files('*.edu.csv', str(Path.home()), Ignore=['Library','wild-wayne','anaconda'])
+        
+scan_for_files('*.local.csv', str(Path.home()), Ignore=['Library','wild-wayne','anaconda'])
 readJSON.program_run()
