@@ -9,12 +9,12 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 def read_urls(csv_item):
     with open(csv_item, mode ='r') as csv_read:
-            read_list = csv.reader(csv_read, delimiter=',')
-            for i, row in enumerate(read_list):
-                if row[2] == '1':
-                    auto_check(row[1])
-                if i == 0:
-                    print(csv_item)
+        read_list = csv.reader(csv_read, delimiter=',')
+        for i, row in enumerate(read_list):
+            if row[2] == '1':
+                auto_check(row[1])
+            if i == 0:
+                print(csv_item)
 
 def scan_for_files(pattern, FilePath, Ignore=None):
     try:
@@ -57,4 +57,5 @@ def auto_check(site):
         test_site(site, folderName)
         
 scan_for_files('*.local.csv', str(Path.home()), Ignore=['Library','wild-wayne','anaconda'])
+print('here')
 readJSON.program_run()
