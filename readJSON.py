@@ -8,7 +8,7 @@ def Write_To_CSV(siteNAME, all):
                 violation_csv.writerow(all) 
 
 def json_checks(collection, dict_name, siteURL, count, siteNAME):
-    exclude = ['html','#mainMenu','.wsuheader','header','.wsufooter','.icon-twitter > span','.icon-twitter > span','.icon-facebook > span','.icon-instagram > span','.icon-flickr > span','.icon-youtube > span','.wsuwordmark > .spf-nolink[href$="wayne\.edu\/"]']
+    exclude = ['html','#mainMenu','.wsuheader','header','.wsufooter','.icon-twitter > span','.icon-twitter > span','.icon-facebook > span','.icon-instagram > span','#q','.icon-flickr > span','.icon-youtube > span','.wsuwordmark > .spf-nolink[href$="wayne\.edu\/"]']
     for issue in collection:
         for each in issue['nodes']:
             impact = issue['impact']
