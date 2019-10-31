@@ -1,4 +1,4 @@
-import requests, json, ssl, time, os, csv, fnmatch, readJSON, urllib3
+import requests, json, ssl, time, os, csv, fnmatch, readJSON, urllib3, packages
 from selenium import webdriver
 from pathlib import Path
 from axe_selenium_python import Axe
@@ -55,7 +55,8 @@ def auto_check(site):
         folderName = site.rsplit('.', 2)[0].split('//')[1]
         print(site)
         test_site(site, folderName)
-        
+      
+packages
 scan_for_files('*.local.csv', str(Path.home()), Ignore=['Library','wild-wayne','anaconda'])
 print('here')
 readJSON.program_run()
