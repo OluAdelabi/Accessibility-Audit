@@ -1,58 +1,87 @@
 import requests, os, urllib3, datetime
+from bs4 import BeautifulSoup
 from pathlib import Path
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 urllib3.disable_warnings()
-main = 'https://cancerbiologyprogram.med.wayne.edu/faculty/'
 
-items = ['2019_jing_li.jpg', 'boerner_julie_1.jpg', 'brush_george2_.jpg', 'chen_kang.jpg', 'chen_wei.jpg', 'cherm-directory.jpg', 'cote_michele.jpg', 'decarvalho_anna.jpg', 'dombkowski_alan.jpg', 'drbeebe-dimmer_ph_dphoto.jpg', 'dsc_0644_edited.jpg', 'dsc_0644_edited_1.jpg', 'ge_yubin2__1.jpg', 'gibson_heather.jpg', 'gorski_david.jpg', 'hillman.jpg', 'huttemann.jpg', 'huttemann_small.jpg', 'jing_li_11062015_resized.jpg', 'joinermichael.jpg', 'kidder_reduced.jpg', 'kimhrc_small.jpg', 'kim_seongho2_.jpg', 'lijing_2016_resized.jpg', 'listkaren.jpg', 'listkarin.jpg', 'liu.jpg', 'li_chunying.jpg', 'majumdaradhip.jpg', 'mattingly_raymond_1.jpg', 'mittal2.jpg', 'mittal_photo_2015.jpg', 'mi_qing-sheng.jpg', 'mohammad_ramzi.jpg', 'patrick_reduced.jpg', 'photo_-_ken_honn.jpg', 'photo_chen.jpg', 'purrington_kristen.jpg', 'ratnammanohar.jpg', 'ratnam_small.jpg', 'rattan_ramendeep.jpg', 'raz_avraham.jpg', 'rishi_arun_resized.jpg', 'schwartz_ann.jpg', 'schwartz_ann2_.jpg', 'sheng_reduced.jpg', 'sheng_shijie_1.jpg', 'shields_tony.jpg', 'tainsky_michael.jpg', 'updated_photo_pile_2017.jpg', 'viola-villegas_nerissa_1.jpg', 'wagnerkay-uwe.jpg', 'wanqing-liu_reduced.jpg', 'wu_gen_sheng.jpg', 'xie_youming.jpg', 'yang_zeng-quan.jpg', 'zhang_mary_reduced.jpg']
-
-URLS = []
-for item in items:
-    URLS.append(main+item)
-
-def get_name(url):
-    url = url.rsplit('/',1)
-    return url[1]
-
-def change_ext(url):
-    image = url.rsplit('.')
-    if image[1] != 'jpg':
-        return image[0] + '.jpg'
-    else:
-        return url
-    
 class URL_handler():
+
+    def __init__(self,url):
+        self.home = str(Path.home())
+        self.today = str(datetime.date.today())
+        self.url = url
+        self.file_location = ('{}/{}-{}'.format(str(Path.home()), self.get_site(),self.today))
+        main_content = self.get_content(url)
+        self.soup = BeautifulSoup(main_content, 'html.parser')
+
+    def get_site(self):
+        self.base_url = 'https://'+ self.url.split('/',3)[2]
+        self.site = self.url.split('//')[1]
+        return self.site.split('.wayne.edu')[0]
+
+    def get_content(self, url):
+        self.r = requests.get(url, verify = False, allow_redirects=False)
+        return self.r.content
     
-    def __init__(self):
-        pass
-    
-    def auto_check(self, url):
-        r = requests.post(url, verify = False, timeout=20)
-        if r.status_code != 404 and r.status_code != 500:
-            return url
+    def get_image_url(self):
+        self.A = self.soup.find_all('img')
+        for a in self.A:
+            src = a.get('src')
+            if 'http' not in src:
+                self.download_from_links(str(self.base_url + src))
+            else:
+                self.download_from_links(src)
+
+    def save_it(self,item,*arg):
+        string = ''
+        for k in arg:
+            string += '{}/'
+        string = string.rsplit('/',1)[0]
+        open((string.format(*arg)),'wb').write(item)
+
+    # def mimic_url_path(self,url):
+    #     the_path = url.split('/')
+    #     the_path = the_path[3:]
+    #     for folder in the_path:
+            
+    #     print(the_path)
+
+    def download_from_links(self, source):
+        item = self.get_content(source)
+        # self.mimic_url_path(source)
+        source = source.split('/')
+        place = self.file_location +'/'+ source[3]
+        try:
+            os.makedirs(place)
+        except OSError:
+            self.save_it(item, place, source[4])
         else:
-            print(url, r.status_code)
+            self.save_it(item, place, source[4])
+
+
+U = URL_handler('https://physiology.med.wayne.edu/imsd-alumni')
+
+U.get_image_url()
+
+# def change_ext(url):
+#     image = url.rsplit('.')
+#     if image[1] != 'jpg':
+#         return image[0] + '.jpg'
+#     else:
+#         return url
     
-    def fetch_content(self, url):
-        r = requests.get(url, verify = False, allow_redirects=False)
-        return r.content
-
-
-
-  
-URL = URL_handler()
-
-for url in URLS:
-    URL.auto_check(url)
-    rg = URL.fetch_content(url)
-    top_dir = ('{}/{}-File'.format(str(Path.home()), datetime.date.today()))
-    url = get_name(url)
-    url = change_ext(url)
-    try:
-        os.makedirs(top_dir)
-    except OSError:
-        open('{}/{}'.format(top_dir, url), 'wb').write(rg)
-    else:
-        open('{}/{}'.format(top_dir, url), 'wb').write(rg)
+# class URL_handler():
     
+#     def __init__(self):
+#         pass
+    
+#     def auto_check(self, url):
+#         r = requests.post(url, verify = False, timeout=20)
+#         if r.status_code != 404 and r.status_code != 500:
+#             return url
+#         else:
+#             print(url, r.status_code)
+    
+
+

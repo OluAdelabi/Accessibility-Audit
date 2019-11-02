@@ -1,5 +1,5 @@
 import os
-os.system('pip install --upgrade pip')
+os.system('pip install --user --upgrade pip')
 
 packages = [
     'requests',
@@ -14,9 +14,7 @@ def install_and_import(packages):
         try:
             importlib.import_module(package)
         except ImportError:
-            os.system('pip install {}'.format(package))
-            # from pip._internal import main
-            # main(['install', package])
+            os.system('pip install --user {}'.format(package))
         finally:
             globals()[package] = importlib.import_module(package)
 
