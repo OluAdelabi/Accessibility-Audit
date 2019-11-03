@@ -5,7 +5,8 @@ packages = [
     'requests',
     'urllib3',
     'selenium',
-    'axe_selenium_python'
+    'axe_selenium_python',
+    'pyvirtualdisplay'
 ]
 
 def install_and_import(packages):

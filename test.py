@@ -1,20 +1,17 @@
-from bs4 import BeautifulSoup
-import requests, datetime
-from pathlib import Path
+from pyvirtualdisplay import Display
+from selenium import webdriver
+from axe_selenium_python import Axe
 
-main = 'https://physiology.med.wayne.edu/imsd-alumni/sdfsd/asdfsd/sdf'
-# date = str(datetime.date.today())
-home = str(Path.home())+'/'+ str(datetime.date.today())
 
-site = 'https://'+ main.split('/',3)[2]
-print(site)
+with Display():
+    # we can now start Firefox and it will run inside the virtual display
+    browser = webdriver.Firefox()
 
-def save(*arg):
-    string = ''
-    for k in arg:
-        string += '{}/'
-    string = string.rsplit('/',1)[0]
-    return (string.format(*arg))
-    
-    
-save('a','b','c','x','y','z')
+    # put the rest of our selenium code in a try/finally
+    # to make sure we always clean up at the end
+    try:
+        browser.get('http://www.google.com')
+        print(browser.title) #this should print "Google"
+
+    finally:
+        browser.quit()

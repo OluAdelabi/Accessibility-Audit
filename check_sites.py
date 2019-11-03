@@ -1,11 +1,25 @@
 import requests, json, ssl, time, os, csv, fnmatch, readJSON, urllib3, packages
 from selenium import webdriver
 from pathlib import Path
+from pyvirtualdisplay import Display
 from axe_selenium_python import Axe
 urllib3.disable_warnings()
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # page_list =[]
+
+with Display():
+    # we can now start Firefox and it will run inside the virtual display
+    browser = webdriver.Firefox()
+
+    # put the rest of our selenium code in a try/finally
+    # to make sure we always clean up at the end
+    try:
+        browser.get('http://www.google.com')
+        print(browser.title) #this should print "Google"
+
+    finally:
+        browser.quit()
 
 def read_urls(csv_item):
     with open(csv_item, mode ='r') as csv_read:
